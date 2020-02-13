@@ -1,7 +1,7 @@
 package org.example.mpp.auth
 
-import dev.icerock.moko.fields.FormField
-import dev.icerock.moko.fields.liveBlock
+
+import InputPhoneViewModel
 import dev.icerock.moko.mvvm.dispatcher.EventsDispatcher
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.widgets.*
@@ -23,22 +23,22 @@ class InputPhoneScreen(
     ) -> InputPhoneViewModel,
     private val routeInputCode: Route<String>
 ) : WidgetScreen<Args.Empty>(), InputPhoneViewModel.EventsListener, NavigationItem {
-    override val navigationBar: NavigationBar = NavigationBar.Normal("Input phone".desc())
 
+    override val navigationBar: NavigationBar get() = NavigationBar.Normal("Input phone".desc())
 
     override fun createContentWidget() = with(theme) {
-
         val viewModel = getViewModel {
             viewModelFactory(createEventsDispatcher())
         }
+
         viewModel.eventsDispatcher.listen(this@InputPhoneScreen, this@InputPhoneScreen)
 
         constraint(size = WidgetSize.AsParent) {
             val nameInput = +input(
                 size = WidgetSize.WidthAsParentHeightWrapContent,
-                id = Ids.Name,
-                field = viewModel.phoneField,
-                label = const("Phone")
+                id = Ids.Phone,
+                label = const("Phone"),
+                field = viewModel.phoneField
             )
 
             val submitButton = +button(
@@ -57,12 +57,12 @@ class InputPhoneScreen(
         }
     }
 
+    object Ids {
+        object Phone : InputWidget.Id
+    }
+
     override fun routeInputCode(token: String) {
         routeInputCode.route(this, token)
     }
-
-    object Ids {
-        object Name : InputWidget.Id
-    }
-
 }
+
